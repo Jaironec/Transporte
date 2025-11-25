@@ -79,208 +79,213 @@
             </DockPanel>
         </Border>
 
-        <!-- Contenido Principal -->
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="28">
-                <!-- Encabezado -->
-                <Border Style="{StaticResource CardStyle}" Padding="22" Margin="0,0,0,16">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock Text="Registro de Viaje" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}"/>
-                            <TextBlock Text="{Binding ViajeSeleccionado.NumeroViaje, StringFormat='Referencia: {0}', TargetNullValue='Nuevo registro'}"
-                                       Foreground="{StaticResource TextSecondary}" Margin="0,6,0,0"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button Content="Actualizar" Command="{Binding LoadViajesCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
-                            <Button Content="Agregar gasto" Command="{Binding AgregarGastoCommand}" Style="{StaticResource MaterialDesignOutlinedButton}"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <Grid materialDesign:GridAssist.ColumnSpacing="16">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Datos del Camión -->
-                    <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Datos del Camión" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,12"/>
-                            <Grid materialDesign:GridAssist.ColumnSpacing="16" materialDesign:GridAssist.RowSpacing="10">
+        <!-- Contenido Principal con capa de adornos para validaciones y overlays -->
+        <AdornerDecorator>
+            <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="28">
+                        <!-- Encabezado -->
+                        <Border Style="{StaticResource CardStyle}" Padding="22" Margin="0,0,0,16">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
-                                <ComboBox Grid.Row="0" Grid.Column="0"
-                                          materialDesign:HintAssist.Hint="Vehículo"
-                                          ItemsSource="{Binding Vehiculos}"
-                                          DisplayMemberPath="Placa"
-                                          SelectedValuePath="Id"
-                                          SelectedValue="{Binding SelectedVehiculoId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <ComboBox Grid.Row="0" Grid.Column="1"
-                                          materialDesign:HintAssist.Hint="Conductor"
-                                          ItemsSource="{Binding Conductores}"
-                                          DisplayMemberPath="Apellidos"
-                                          SelectedValuePath="Id"
-                                          SelectedValue="{Binding SelectedConductorId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <ComboBox Grid.Row="1" Grid.Column="0"
-                                          materialDesign:HintAssist.Hint="Cliente"
-                                          ItemsSource="{Binding Clientes}"
-                                          DisplayMemberPath="RazonSocial"
-                                          SelectedValuePath="Id"
-                                          SelectedValue="{Binding SelectedClienteId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <DatePicker Grid.Row="1" Grid.Column="1"
-                                            materialDesign:HintAssist.Hint="Fecha de Salida"
-                                            SelectedDate="{Binding FechaSalida, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <TextBox Grid.Row="2" Grid.Column="0"
-                                         materialDesign:HintAssist.Hint="Origen"
-                                         Text="{Binding Origen, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <TextBox Grid.Row="2" Grid.Column="1"
-                                         materialDesign:HintAssist.Hint="Destino"
-                                         Text="{Binding Destino, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <TextBox Grid.Row="3" Grid.Column="0"
-                                         materialDesign:HintAssist.Hint="Cantidad de litros"
-                                         Text="{Binding CantidadLitros, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                                         materialDesign:HintAssist.HelperText="Requerido para calcular rendimiento"/>
-
-                                <ComboBox Grid.Row="3" Grid.Column="1"
-                                          materialDesign:HintAssist.Hint="Estado"
-                                          SelectedItem="{Binding Estado, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}">
-                                    <ComboBoxItem Content="Programado"/>
-                                    <ComboBoxItem Content="EnCurso"/>
-                                    <ComboBoxItem Content="Completado"/>
-                                    <ComboBoxItem Content="Cancelado"/>
-                                </ComboBox>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Datos Financieros -->
-                    <StackPanel Grid.Column="1">
-                        <Border Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryBlue}" Padding="20">
-                            <StackPanel>
-                                <TextBlock Text="Datos Financieros" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,16"/>
-
-                                <Grid materialDesign:GridAssist.RowSpacing="10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Flete" Foreground="#BFDBFE"/>
-                                    <TextBox Grid.Row="0" Grid.Column="1"
-                                             Text="{Binding Flete, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
-                                             materialDesign:HintAssist.Hint="0.00"
-                                             TextAlignment="Right"
-                                             FontSize="16"
-                                             materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
-                                             Foreground="White"/>
-
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Pago Conductor" Foreground="#BFDBFE"/>
-                                    <TextBox Grid.Row="1" Grid.Column="1"
-                                             Text="{Binding PagoConductor, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
-                                             materialDesign:HintAssist.Hint="0.00"
-                                             TextAlignment="Right"
-                                             FontSize="16"
-                                             materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
-                                             Foreground="White"/>
-
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Total Gastos" Foreground="#FB923C" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalGastos, StringFormat=C}"
-                                               Foreground="#FB923C" FontWeight="Bold" HorizontalAlignment="Right"/>
-
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Utilidad Neta" Foreground="{StaticResource AccentTurquoise}" FontWeight="Bold" FontSize="15"/>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding UtilidadNeta, StringFormat=C}"
-                                               Foreground="{StaticResource AccentTurquoise}" FontWeight="Bold" FontSize="22"
-                                               HorizontalAlignment="Right"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
-
-                        <Border Style="{StaticResource KPICardStyle}">
-                            <StackPanel>
-                                <TextBlock Text="Indicadores"
-                                           FontWeight="SemiBold"
-                                           Foreground="{StaticResource TextSecondary}"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <materialDesign:PackIcon Kind="Timeline" Width="28" Height="28" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,10,0"/>
-                                    <StackPanel>
-                                        <TextBlock Text="Fecha salida" Foreground="{StaticResource TextSecondary}" FontSize="12"/>
-                                        <TextBlock Text="{Binding FechaSalida, StringFormat=dd MMM yyyy}" FontSize="16" FontWeight="Bold"/>
-                                    </StackPanel>
+                                <StackPanel>
+                                    <TextBlock Text="Registro de Viaje" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}"/>
+                                    <TextBlock Text="{Binding ViajeSeleccionado.NumeroViaje, StringFormat='Referencia: {0}', TargetNullValue='Nuevo registro'}"
+                                               Foreground="{StaticResource TextSecondary}" Margin="0,6,0,0"/>
                                 </StackPanel>
-                            </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Content="Actualizar" Command="{Binding LoadViajesCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,8,0"/>
+                                    <Button Content="Agregar gasto" Command="{Binding AgregarGastoCommand}" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                </StackPanel>
+                            </Grid>
                         </Border>
-                    </StackPanel>
-                </Grid>
 
-                <!-- Lista de gastos -->
-                <Border Style="{StaticResource CardStyle}" Margin="0,18,0,0">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,16">
+                        <Grid materialDesign:GridAssist.ColumnSpacing="16">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Lista de Gastos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlue}"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <ComboBox Width="150" materialDesign:HintAssist.Hint="Tipo"
-                                          SelectedItem="{Binding NuevoGastoTipo}" Margin="0,0,8,0">
-                                    <ComboBoxItem Content="Combustible"/>
-                                    <ComboBoxItem Content="Peaje"/>
-                                    <ComboBoxItem Content="Viatico"/>
-                                    <ComboBoxItem Content="Otros"/>
-                                </ComboBox>
-                                <TextBox Width="240" materialDesign:HintAssist.Hint="Descripción" Text="{Binding NuevoGastoDescripcion}" Margin="0,0,8,0"/>
-                                <TextBox Width="120" materialDesign:HintAssist.Hint="Monto" Text="{Binding NuevoGastoMonto}" TextAlignment="Right" Margin="0,0,8,0"/>
-                                <Button Content="Agregar" Command="{Binding AgregarGastoCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Background="{StaticResource AccentOrange}" Foreground="#111827"/>
+
+                            <!-- Datos del Camión -->
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="Datos del Camión" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,12"/>
+                                    <Grid materialDesign:GridAssist.ColumnSpacing="16" materialDesign:GridAssist.RowSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <ComboBox Grid.Row="0" Grid.Column="0"
+                                                  materialDesign:HintAssist.Hint="Vehículo"
+                                                  ItemsSource="{Binding Vehiculos}"
+                                                  DisplayMemberPath="Placa"
+                                                  SelectedValuePath="Id"
+                                                  SelectedValue="{Binding SelectedVehiculoId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <ComboBox Grid.Row="0" Grid.Column="1"
+                                                  materialDesign:HintAssist.Hint="Conductor"
+                                                  ItemsSource="{Binding Conductores}"
+                                                  DisplayMemberPath="Apellidos"
+                                                  SelectedValuePath="Id"
+                                                  SelectedValue="{Binding SelectedConductorId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <ComboBox Grid.Row="1" Grid.Column="0"
+                                                  materialDesign:HintAssist.Hint="Cliente"
+                                                  ItemsSource="{Binding Clientes}"
+                                                  DisplayMemberPath="RazonSocial"
+                                                  SelectedValuePath="Id"
+                                                  SelectedValue="{Binding SelectedClienteId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <DatePicker Grid.Row="1" Grid.Column="1"
+                                                    materialDesign:HintAssist.Hint="Fecha de Salida"
+                                                    SelectedDate="{Binding FechaSalida, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <TextBox Grid.Row="2" Grid.Column="0"
+                                                 materialDesign:HintAssist.Hint="Origen"
+                                                 Text="{Binding Origen, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <TextBox Grid.Row="2" Grid.Column="1"
+                                                 materialDesign:HintAssist.Hint="Destino"
+                                                 Text="{Binding Destino, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                        <TextBox Grid.Row="3" Grid.Column="0"
+                                                 materialDesign:HintAssist.Hint="Cantidad de litros"
+                                                 Text="{Binding CantidadLitros, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                                                 materialDesign:HintAssist.HelperText="Requerido para calcular rendimiento"/>
+
+                                        <ComboBox Grid.Row="3" Grid.Column="1"
+                                                  materialDesign:HintAssist.Hint="Estado"
+                                                  SelectedItem="{Binding Estado, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBoxItem Content="Programado"/>
+                                            <ComboBoxItem Content="EnCurso"/>
+                                            <ComboBoxItem Content="Completado"/>
+                                            <ComboBoxItem Content="Cancelado"/>
+                                        </ComboBox>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Datos Financieros -->
+                            <StackPanel Grid.Column="1">
+                                <Border Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryBlue}" Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="Datos Financieros" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,16"/>
+
+                                        <Grid materialDesign:GridAssist.RowSpacing="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Flete" Foreground="#BFDBFE"/>
+                                            <TextBox Grid.Row="0" Grid.Column="1"
+                                                     Text="{Binding Flete, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                     materialDesign:HintAssist.Hint="0.00"
+                                                     TextAlignment="Right"
+                                                     FontSize="16"
+                                                     materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
+                                                     Foreground="White"/>
+
+                                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Pago Conductor" Foreground="#BFDBFE"/>
+                                            <TextBox Grid.Row="1" Grid.Column="1"
+                                                     Text="{Binding PagoConductor, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                     materialDesign:HintAssist.Hint="0.00"
+                                                     TextAlignment="Right"
+                                                     FontSize="16"
+                                                     materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
+                                                     Foreground="White"/>
+
+                                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Total Gastos" Foreground="#FB923C" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalGastos, StringFormat=C}"
+                                                       Foreground="#FB923C" FontWeight="Bold" HorizontalAlignment="Right"/>
+
+                                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Utilidad Neta" Foreground="{StaticResource AccentTurquoise}" FontWeight="Bold" FontSize="15"/>
+                                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding UtilidadNeta, StringFormat=C}"
+                                                       Foreground="{StaticResource AccentTurquoise}" FontWeight="Bold" FontSize="22"
+                                                       HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Style="{StaticResource KPICardStyle}">
+                                    <StackPanel>
+                                        <TextBlock Text="Indicadores"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondary}"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                            <materialDesign:PackIcon Kind="Timeline" Width="28" Height="28" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,10,0"/>
+                                            <StackPanel>
+                                                <TextBlock Text="Fecha salida" Foreground="{StaticResource TextSecondary}" FontSize="12"/>
+                                                <TextBlock Text="{Binding FechaSalida, StringFormat=dd MMM yyyy}" FontSize="16" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
                         </Grid>
 
-                        <DataGrid ItemsSource="{Binding Gastos}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="120"/>
-                                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="120"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
-                                <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=C}" Width="150" FontWeight="SemiBold" TextAlignment="Right"/>
-                                <DataGridTemplateColumn Width="70">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Style="{StaticResource MaterialDesignIconButton}"
-                                                    Command="{Binding DataContext.EliminarGastoCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                    CommandParameter="{Binding Id}">
-                                                <materialDesign:PackIcon Kind="Delete" Foreground="#EF4444"/>
-                                            </Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                        <!-- Lista de gastos -->
+                        <Border Style="{StaticResource CardStyle}" Margin="0,18,0,0">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Lista de Gastos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlue}"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <ComboBox Width="150" materialDesign:HintAssist.Hint="Tipo"
+                                                  SelectedItem="{Binding NuevoGastoTipo}" Margin="0,0,8,0">
+                                            <ComboBoxItem Content="Combustible"/>
+                                            <ComboBoxItem Content="Peaje"/>
+                                            <ComboBoxItem Content="Viatico"/>
+                                            <ComboBoxItem Content="Otros"/>
+                                        </ComboBox>
+                                        <TextBox Width="240" materialDesign:HintAssist.Hint="Descripción" Text="{Binding NuevoGastoDescripcion}" Margin="0,0,8,0"/>
+                                        <TextBox Width="120" materialDesign:HintAssist.Hint="Monto" Text="{Binding NuevoGastoMonto}" TextAlignment="Right" Margin="0,0,8,0"/>
+                                        <Button Content="Agregar" Command="{Binding AgregarGastoCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Background="{StaticResource AccentOrange}" Foreground="#111827"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <DataGrid ItemsSource="{Binding Gastos}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="120"/>
+                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="120"/>
+                                        <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
+                                        <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=C}" Width="150" FontWeight="SemiBold" TextAlignment="Right"/>
+                                        <DataGridTemplateColumn Width="70">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                            Command="{Binding DataContext.EliminarGastoCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding Id}">
+                                                        <materialDesign:PackIcon Kind="Delete" Foreground="#EF4444"/>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
+                </ScrollViewer>
 
-        <!-- Overlay de carga -->
-        <Grid Background="#99000000"
-              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch">
-            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="70" Height="70" Foreground="{StaticResource AccentTurquoise}"/>
-        </Grid>
+                <!-- Overlay de carga -->
+                <Grid Background="#99000000"
+                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Panel.ZIndex="2">
+                    <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="70" Height="70" Foreground="{StaticResource AccentTurquoise}"/>
+                </Grid>
 
-        <materialDesign:Snackbar MessageQueue="{Binding SnackbarMessageQueue}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="24"/>
+                <materialDesign:Snackbar MessageQueue="{Binding SnackbarMessageQueue}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="24" Panel.ZIndex="3"/>
+            </Grid>
+        </AdornerDecorator>
     </DockPanel>
 </UserControl>
