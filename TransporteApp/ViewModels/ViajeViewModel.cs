@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using TransporteApp.Data;
@@ -12,6 +15,8 @@ namespace TransporteApp.ViewModels;
 public partial class ViajeViewModel : BaseViewModel
 {
     private readonly TransporteDbContext _context;
+
+    public ISnackbarMessageQueue SnackbarMessageQueue { get; } = new SnackbarMessageQueue(TimeSpan.FromSeconds(4));
 
     [ObservableProperty]
     private Viaje? viajeSeleccionado;
@@ -60,10 +65,13 @@ public partial class ViajeViewModel : BaseViewModel
     private decimal pagoConductor;
 
     [ObservableProperty]
-    private DateTime fechaSalida = DateTime.Now;
+    [NotifyDataErrorInfo]
+    [Required(ErrorMessage = "Los litros son obligatorios")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Los litros deben ser mayores a 0")]
+    private decimal cantidadLitros;
 
     [ObservableProperty]
-    private decimal cantidadLitros;
+    private DateTime fechaSalida = DateTime.Now;
 
     [ObservableProperty]
     private string estado = "Programado";
@@ -219,6 +227,12 @@ public partial class ViajeViewModel : BaseViewModel
         ClearErrors();
     }
 
+    protected override void OnErrorsChanged(DataErrorsChangedEventArgs e)
+    {
+        base.OnErrorsChanged(e);
+        GuardarViajeCommand.NotifyCanExecuteChanged();
+    }
+
     private void PrepararNuevoViaje()
     {
         ViajeSeleccionado = new Viaje
@@ -235,7 +249,7 @@ public partial class ViajeViewModel : BaseViewModel
 
     private async Task CargarDatosAsync()
     {
-        try
+        await ExecuteSafeAsync(async () =>
         {
             IsLoading = true;
             MensajeError = null;
@@ -246,15 +260,7 @@ public partial class ViajeViewModel : BaseViewModel
                 CargarConductoresAsync(),
                 CargarClientesAsync()
             );
-        }
-        catch (Exception ex)
-        {
-            MensajeError = $"Error de conexión: {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        }, "No se pudo cargar los datos desde la base de datos.");
     }
 
     private async Task CargarViajesAsync()
@@ -307,7 +313,7 @@ public partial class ViajeViewModel : BaseViewModel
 
         Gastos.Clear();
         foreach (var g in lista) Gastos.Add(g);
-        
+
         CalcularMetricas();
     }
 
@@ -315,30 +321,36 @@ public partial class ViajeViewModel : BaseViewModel
     {
         UtilidadBruta = Flete - PagoConductor;
         TotalGastos = Gastos.Sum(g => g.Monto);
-        UtilidadNeta = UtilidadBruta - TotalGastos;
+        UtilidadNeta = Flete - (PagoConductor + TotalGastos);
 
-        var gastosCombustible = Gastos.Where(g => g.Tipo == "Combustible");
-        var costoCombustible = gastosCombustible.Sum(g => g.Monto);
-        
-        // Lógica simple de rendimiento (si tuviéramos litros comprados)
-        RendimientoCombustible = 0; 
+        RendimientoCombustible = CantidadLitros > 0
+            ? Math.Round(UtilidadNeta / CantidadLitros, 2)
+            : 0;
+    }
+
+    partial void OnCantidadLitrosChanged(decimal value)
+    {
+        ValidateProperty(value, nameof(CantidadLitros));
+        CalcularMetricas();
+        GuardarViajeCommand.NotifyCanExecuteChanged();
     }
 
     private async Task RegistrarViajeCompletoAsync()
     {
         ValidateAllProperties();
-        if (HasErrors) 
+        if (HasErrors)
         {
             MensajeError = "Por favor corrija los errores antes de guardar.";
+            SnackbarMessageQueue.Enqueue(MensajeError);
             return;
         }
 
         if (ViajeSeleccionado == null) return;
 
-        using var transaction = await _context.Database.BeginTransactionAsync();
-
-        try
+        await ExecuteSafeAsync(async () =>
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             IsLoading = true;
             MensajeError = null;
 
@@ -364,31 +376,18 @@ public partial class ViajeViewModel : BaseViewModel
             }
             await _context.SaveChangesAsync();
 
-            // Actualizar estado vehículo
             var vehiculo = await _context.Vehiculos.FindAsync(SelectedVehiculoId);
             if (vehiculo != null && Estado == "EnCurso")
             {
-                // Asumiendo que 'EnRuta' es válido o usando 'Activo' si hay restricción
-                // Para Gold Standard, deberíamos manejar esto mejor, pero seguimos la lógica anterior
-                vehiculo.Estado = "Activo"; // Mantener seguro por ahora
+                vehiculo.Estado = "Activo";
             }
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
             await CargarViajesAsync();
-            MessageBox.Show("Viaje registrado exitosamente.", "Operación Completada", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            MensajeError = $"Error crítico: {ex.Message}";
-            MessageBox.Show(MensajeError, "Error de Base de Datos", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+            SnackbarMessageQueue.Enqueue("Viaje registrado exitosamente.");
+        }, "No se pudo registrar el viaje. Verifique la conexión a la base de datos.");
     }
 
     private async Task EliminarViajeAsync()
@@ -397,22 +396,15 @@ public partial class ViajeViewModel : BaseViewModel
 
         if (MessageBox.Show("¿Confirma la eliminación del viaje?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
-        try
+        await ExecuteSafeAsync(async () =>
         {
             IsLoading = true;
             _context.Viajes.Remove(ViajeSeleccionado);
             await _context.SaveChangesAsync();
             await CargarViajesAsync();
             ViajeSeleccionado = null;
-        }
-        catch (Exception ex)
-        {
-            MensajeError = $"Error al eliminar: {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+            SnackbarMessageQueue.Enqueue("Viaje eliminado correctamente.");
+        }, "No se pudo eliminar el viaje seleccionado.");
     }
 
     private async Task AgregarGastoAsync()
@@ -420,16 +412,18 @@ public partial class ViajeViewModel : BaseViewModel
         if (ViajeSeleccionado == null || ViajeSeleccionado.Id == 0)
         {
             MensajeError = "Guarde el viaje antes de agregar gastos.";
+            SnackbarMessageQueue.Enqueue(MensajeError);
             return;
         }
 
         if (NuevoGastoMonto <= 0)
         {
             MensajeError = "El monto debe ser mayor a 0.";
+            SnackbarMessageQueue.Enqueue(MensajeError);
             return;
         }
 
-        try
+        await ExecuteSafeAsync(async () =>
         {
             var gasto = new GastoOperativo
             {
@@ -445,18 +439,15 @@ public partial class ViajeViewModel : BaseViewModel
 
             NuevoGastoDescripcion = "";
             NuevoGastoMonto = 0;
-            
+
             await CargarGastosAsync(ViajeSeleccionado.Id);
-        }
-        catch (Exception ex)
-        {
-            MensajeError = $"Error al agregar gasto: {ex.Message}";
-        }
+            SnackbarMessageQueue.Enqueue("Gasto agregado.");
+        }, "No se pudo agregar el gasto. Intente nuevamente.");
     }
 
     private async Task EliminarGastoAsync(int id)
     {
-        try
+        await ExecuteSafeAsync(async () =>
         {
             var gasto = await _context.GastosOperativos.FindAsync(id);
             if (gasto != null)
@@ -464,12 +455,42 @@ public partial class ViajeViewModel : BaseViewModel
                 _context.GastosOperativos.Remove(gasto);
                 await _context.SaveChangesAsync();
                 if (ViajeSeleccionado != null)
+                {
                     await CargarGastosAsync(ViajeSeleccionado.Id);
+                }
+                SnackbarMessageQueue.Enqueue("Gasto eliminado.");
             }
+        }, "No se pudo eliminar el gasto seleccionado.");
+    }
+
+    private async Task ExecuteSafeAsync(Func<Task> action, string friendlyError)
+    {
+        try
+        {
+            await action();
+        }
+        catch (DbUpdateException ex)
+        {
+            await HandleErrorAsync(friendlyError, ex);
+        }
+        catch (InvalidOperationException ex)
+        {
+            await HandleErrorAsync(friendlyError, ex);
         }
         catch (Exception ex)
         {
-            MensajeError = $"Error al eliminar gasto: {ex.Message}";
+            await HandleErrorAsync(friendlyError, ex);
         }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private Task HandleErrorAsync(string friendlyError, Exception ex)
+    {
+        MensajeError = $"{friendlyError}\nDetalle: {ex.Message}";
+        SnackbarMessageQueue.Enqueue(MensajeError);
+        return Task.CompletedTask;
     }
 }
