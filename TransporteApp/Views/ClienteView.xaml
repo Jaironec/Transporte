@@ -1,0 +1,92 @@
+<UserControl x:Class="TransporteApp.Views.ClienteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <Grid Background="{DynamicResource MaterialDesignPaper}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="20" Background="{DynamicResource MaterialDesignCardBackground}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Gestión de Clientes" Style="{StaticResource MaterialDesignHeadline4TextBlock}"/>
+                    <TextBlock Text="Directorio de clientes y empresas" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Command="{Binding NuevoCommand}" Content="Nuevo Cliente" Style="{StaticResource MaterialDesignRaisedButton}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista de Clientes -->
+            <materialDesign:Card Grid.Column="0" Margin="0,0,20,0" VerticalAlignment="Stretch" UniformCornerRadius="8">
+                <DataGrid ItemsSource="{Binding Clientes}" 
+                          SelectedItem="{Binding ClienteSeleccionado}"
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
+                          materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Razón Social" Binding="{Binding RazonSocial}" FontWeight="Bold" Width="*"/>
+                        <DataGridTextColumn Header="RUC" Binding="{Binding RUC}"/>
+                        <DataGridTextColumn Header="Contacto" Binding="{Binding Contacto}"/>
+                        <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}"/>
+                        <DataGridTemplateColumn Header="Estado">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="4" Padding="8,2" Background="{DynamicResource PrimaryHueLightBrush}">
+                                        <TextBlock Text="{Binding Estado}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </materialDesign:Card>
+
+            <!-- Formulario de Edición -->
+            <materialDesign:Card Grid.Column="1" Padding="20" UniformCornerRadius="8" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="Detalle del Cliente" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0,0,0,20"/>
+
+                        <TextBox Text="{Binding ClienteSeleccionado.RazonSocial}" materialDesign:HintAssist.Hint="Razón Social" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding ClienteSeleccionado.RUC}" materialDesign:HintAssist.Hint="RUC" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding ClienteSeleccionado.Contacto}" materialDesign:HintAssist.Hint="Persona de Contacto" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding ClienteSeleccionado.Telefono}" materialDesign:HintAssist.Hint="Teléfono" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding ClienteSeleccionado.Email}" materialDesign:HintAssist.Hint="Email" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding ClienteSeleccionado.Direccion}" materialDesign:HintAssist.Hint="Dirección" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15" Height="80" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+
+                        <ComboBox Text="{Binding ClienteSeleccionado.Estado}" materialDesign:HintAssist.Hint="Estado" Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,0,0,15">
+                            <ComboBoxItem Content="Activo"/>
+                            <ComboBoxItem Content="Inactivo"/>
+                        </ComboBox>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                            <Button Command="{Binding CancelarCommand}" Content="Cancelar" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,10,0"/>
+                            <Button Command="{Binding GuardarCommand}" Content="Guardar" Style="{StaticResource MaterialDesignRaisedButton}"/>
+                        </StackPanel>
+                        
+                        <Button Command="{Binding EliminarCommand}" Content="Eliminar Cliente" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Red" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </materialDesign:Card>
+        </Grid>
+    </Grid>
+</UserControl>

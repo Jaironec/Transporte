@@ -1,0 +1,107 @@
+<Application x:Class="TransporteApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Material Design -->
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="BlueGrey" SecondaryColor="Amber" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Colores Corporativos Premium -->
+            <SolidColorBrush x:Key="PrimaryBlue" Color="#0F172A"/> <!-- Slate 900 -->
+            <SolidColorBrush x:Key="SecondaryBlue" Color="#1E293B"/> <!-- Slate 800 -->
+            <SolidColorBrush x:Key="AccentOrange" Color="#F59E0B"/> <!-- Amber 500 -->
+            <SolidColorBrush x:Key="AccentTurquoise" Color="#14B8A6"/> <!-- Teal 500 -->
+            <SolidColorBrush x:Key="BackgroundLight" Color="#F1F5F9"/> <!-- Slate 100 -->
+            <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
+            
+            <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
+            <SolidColorBrush x:Key="TextSecondary" Color="#64748B"/>
+
+            <!-- Estilos Globales -->
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI Variable Display"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            </Style>
+
+            <!-- Botones: Redondeados y con Ripple -->
+            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Padding" Value="16,10"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="8"/>
+                <Setter Property="materialDesign:RippleAssist.IsDisabled" Value="False"/>
+            </Style>
+
+            <!-- TextBox: Floating Hint por defecto -->
+            <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <Setter Property="Margin" Value="0,0,0,16"/>
+                <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.9"/>
+            </Style>
+            
+            <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                <Setter Property="Margin" Value="0,0,0,16"/>
+            </Style>
+            
+            <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                <Setter Property="Margin" Value="0,0,0,16"/>
+            </Style>
+
+            <!-- DataGrid: Estilo Premium -->
+            <Style TargetType="DataGrid" BasedOn="{StaticResource MaterialDesignDataGrid}">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+                <Setter Property="RowHeight" Value="40"/>
+                <Setter Property="ColumnHeaderHeight" Value="45"/>
+                <Setter Property="GridLinesVisibility" Value="None"/>
+                <Setter Property="HeadersVisibility" Value="Column"/>
+                <Setter Property="materialDesign:DataGridAssist.CellPadding" Value="16,8"/>
+                <Setter Property="materialDesign:DataGridAssist.ColumnHeaderPadding" Value="16,10"/>
+                <Setter Property="materialDesign:DataGridAssist.CornerRadius" Value="8"/>
+            </Style>
+
+            <!-- Cards -->
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="24"/>
+                <Setter Property="Margin" Value="8"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="20" 
+                                        ShadowDepth="5" 
+                                        Opacity="0.08" 
+                                        Color="Black"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="KPICardStyle" TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="Padding" Value="24"/>
+                <Setter Property="Margin" Value="12"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect BlurRadius="25" 
+                                        ShadowDepth="8" 
+                                        Opacity="0.1" 
+                                        Color="Black"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
+
+
+

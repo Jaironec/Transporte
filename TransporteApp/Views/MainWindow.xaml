@@ -1,0 +1,235 @@
+<Window x:Class="TransporteApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:TransporteApp.ViewModels"
+        xmlns:views="clr-namespace:TransporteApp.Views"
+        mc:Ignorable="d"
+        Title="Transporte Premium - Gestión Logística" 
+        Height="800" 
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource MaterialDesignBackground}">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ViajeViewModel}">
+            <views:ViajeDetalleView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:VehiculoViewModel}">
+            <views:VehiculoView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ConductorViewModel}">
+            <views:ConductorView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ClienteViewModel}">
+            <views:ClienteView/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <materialDesign:DialogHost Identifier="MainDialogHost">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Barra Superior -->
+            <Border Grid.Row="0" 
+                    Background="{DynamicResource PrimaryBlue}"
+                    Padding="20,15"
+                    Effect="{StaticResource MaterialDesignShadowDepth2}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Truck" 
+                                               Foreground="White" 
+                                               Width="32" 
+                                               Height="32" 
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,12,0"/>
+                        <TextBlock Text="Transporte Premium" 
+                                 FontSize="24" 
+                                 FontWeight="Bold"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1" 
+                             Text="{Binding CurrentTitle}"
+                             FontSize="20"
+                             Foreground="White"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button Style="{StaticResource MaterialDesignIconButton}"
+                               Foreground="White"
+                               ToolTip="Cambiar Tema"
+                               Click="ToggleTheme_Click">
+                            <materialDesign:PackIcon Kind="ThemeLightDark"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Contenido Principal -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar Retráctil -->
+                <Border Grid.Column="0" 
+                        x:Name="Sidebar"
+                        Width="280"
+                        Background="{DynamicResource MaterialDesignPaper}"
+                        BorderBrush="{DynamicResource MaterialDesignDivider}"
+                        BorderThickness="0,0,1,0"
+                        Effect="{StaticResource MaterialDesignShadowDepth1}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Botón Colapsar -->
+                        <Button Grid.Row="0"
+                              x:Name="ToggleSidebarButton"
+                              Style="{StaticResource MaterialDesignIconButton}"
+                              HorizontalAlignment="Right"
+                              Margin="8"
+                              Click="ToggleSidebar_Click">
+                            <materialDesign:PackIcon Kind="ChevronLeft"/>
+                        </Button>
+
+                        <!-- Menú de Navegación -->
+                        <ListBox Grid.Row="1"
+                               x:Name="MenuListBox"
+                               BorderThickness="0"
+                               Background="Transparent"
+                               SelectionMode="Single">
+                            <ListBoxItem Tag="Dashboard" Padding="20,15">
+                                <ListBoxItem.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding NavigateCommand}" CommandParameter="Dashboard"/>
+                                </ListBoxItem.InputBindings>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ViewDashboard" 
+                                                           VerticalAlignment="Center" 
+                                                           Margin="0,0,16,0"
+                                                           Width="24" 
+                                                           Height="24"/>
+                                    <TextBlock Text="Dashboard" 
+                                             FontSize="16"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Viajes" Padding="20,15">
+                                <ListBoxItem.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding NavigateCommand}" CommandParameter="Viajes"/>
+                                </ListBoxItem.InputBindings>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="MapMarker" 
+                                                           VerticalAlignment="Center" 
+                                                           Margin="0,0,16,0"
+                                                           Width="24" 
+                                                           Height="24"/>
+                                    <TextBlock Text="Viajes" 
+                                             FontSize="16"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Vehiculos" Padding="20,15">
+                                <ListBoxItem.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding NavigateCommand}" CommandParameter="Vehiculos"/>
+                                </ListBoxItem.InputBindings>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Truck" 
+                                                           VerticalAlignment="Center" 
+                                                           Margin="0,0,16,0"
+                                                           Width="24" 
+                                                           Height="24"/>
+                                    <TextBlock Text="Vehículos" 
+                                             FontSize="16"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Conductores" Padding="20,15">
+                                <ListBoxItem.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding NavigateCommand}" CommandParameter="Conductores"/>
+                                </ListBoxItem.InputBindings>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Account" 
+                                                           VerticalAlignment="Center" 
+                                                           Margin="0,0,16,0"
+                                                           Width="24" 
+                                                           Height="24"/>
+                                    <TextBlock Text="Conductores" 
+                                             FontSize="16"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ListBoxItem>
+                            <ListBoxItem Tag="Clientes" Padding="20,15">
+                                <ListBoxItem.InputBindings>
+                                    <MouseBinding Gesture="LeftClick" Command="{Binding NavigateCommand}" CommandParameter="Clientes"/>
+                                </ListBoxItem.InputBindings>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="OfficeBuilding" 
+                                                           VerticalAlignment="Center" 
+                                                           Margin="0,0,16,0"
+                                                           Width="24" 
+                                                           Height="24"/>
+                                    <TextBlock Text="Clientes" 
+                                             FontSize="16"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ListBoxItem>
+                        </ListBox>
+
+                        <!-- Footer del Sidebar -->
+                        <Border Grid.Row="2" 
+                              BorderBrush="{DynamicResource MaterialDesignDivider}"
+                              BorderThickness="0,1,0,0"
+                              Padding="20,15">
+                            <TextBlock Text="v1.0.0" 
+                                     FontSize="12"
+                                     Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                     HorizontalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Área de Contenido -->
+                <ScrollViewer Grid.Column="1" 
+                            VerticalScrollBarVisibility="Auto"
+                            Padding="20">
+                    <ContentControl Content="{Binding CurrentViewModel}">
+                        <ContentControl.Resources>
+                            <!-- Fallback for string placeholders until ViewModels are ready -->
+                            <DataTemplate DataType="{x:Type sys:String}">
+                                <Border Background="{DynamicResource MaterialDesignPaper}" Padding="20" CornerRadius="8">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding}" FontSize="24" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Vista en construcción" FontSize="16" Foreground="Gray" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ContentControl.Resources>
+                    </ContentControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>

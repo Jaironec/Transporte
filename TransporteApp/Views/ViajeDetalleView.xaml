@@ -1,0 +1,282 @@
+<UserControl x:Class="TransporteApp.Views.ViajeDetalleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1200">
+    <Grid Background="{StaticResource BackgroundLight}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header / Toolbar -->
+        <Border Grid.Row="0" Padding="24,20" Background="White" Effect="{StaticResource MaterialDesignShadowDepth1}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Gestión de Viajes" FontSize="24" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}"/>
+                    <TextBlock Text="{Binding ViajeSeleccionado.NumeroViaje, StringFormat='Referencia: {0}', TargetNullValue='Nuevo Viaje'}" 
+                             FontSize="14"
+                             Foreground="{StaticResource TextSecondary}"
+                             Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Command="{Binding NuevoViajeCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            BorderBrush="{StaticResource PrimaryBlue}"
+                            Foreground="{StaticResource PrimaryBlue}"
+                            Content="Nuevo"
+                            Margin="0,0,12,0"/>
+                    
+                    <Button Command="{Binding GuardarViajeCommand}" 
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Background="{StaticResource AccentOrange}"
+                            BorderBrush="{StaticResource AccentOrange}"
+                            Foreground="White"
+                            Content="Guardar Viaje"
+                            Margin="0,0,12,0"/>
+                            
+                    <Button Command="{Binding EliminarViajeCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            BorderBrush="#EF4444"
+                            Foreground="#EF4444"
+                            Content="Eliminar"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Columna Izquierda: Datos del Viaje -->
+                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,24,0">
+                    <!-- Tarjeta: Información General -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Datos del Servicio" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,24" Foreground="{StaticResource PrimaryBlue}"/>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <ComboBox Grid.Row="0" Grid.Column="0" Margin="0,0,12,16"
+                                          materialDesign:HintAssist.Hint="Vehículo Asignado"
+                                          ItemsSource="{Binding Vehiculos}"
+                                          DisplayMemberPath="Placa"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding SelectedVehiculoId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <ComboBox Grid.Row="0" Grid.Column="1" Margin="12,0,0,16"
+                                          materialDesign:HintAssist.Hint="Conductor Responsable"
+                                          ItemsSource="{Binding Conductores}"
+                                          DisplayMemberPath="Apellidos"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding SelectedConductorId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <ComboBox Grid.Row="1" Grid.Column="0" Margin="0,0,12,16"
+                                          materialDesign:HintAssist.Hint="Cliente / Empresa"
+                                          ItemsSource="{Binding Clientes}"
+                                          DisplayMemberPath="RazonSocial"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding SelectedClienteId, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <DatePicker Grid.Row="1" Grid.Column="1" Margin="12,0,0,16"
+                                            materialDesign:HintAssist.Hint="Fecha de Salida"
+                                            SelectedDate="{Binding FechaSalida}"/>
+
+                                <TextBox Grid.Row="2" Grid.Column="0" Margin="0,0,12,16"
+                                         materialDesign:HintAssist.Hint="Origen"
+                                         Text="{Binding Origen, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBox Grid.Row="2" Grid.Column="1" Margin="12,0,0,16"
+                                         materialDesign:HintAssist.Hint="Destino"
+                                         Text="{Binding Destino, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBox Grid.Row="3" Grid.Column="0" Margin="0,0,12,0"
+                                         materialDesign:HintAssist.Hint="Carga Transportada (Litros)"
+                                         Text="{Binding CantidadLitros}"/>
+
+                                <ComboBox Grid.Row="3" Grid.Column="1" Margin="12,0,0,0"
+                                          materialDesign:HintAssist.Hint="Estado del Viaje"
+                                          Text="{Binding Estado}">
+                                    <ComboBoxItem Content="Programado"/>
+                                    <ComboBoxItem Content="EnCurso"/>
+                                    <ComboBoxItem Content="Completado"/>
+                                    <ComboBoxItem Content="Cancelado"/>
+                                </ComboBox>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Tarjeta: Lista de Gastos -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,24,0,0">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,20">
+                                <TextBlock Text="Registro de Gastos Operativos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlue}"/>
+                            </Grid>
+
+                            <!-- Formulario Agregar Gasto -->
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ComboBox Grid.Column="0" Margin="0,0,12,0"
+                                          materialDesign:HintAssist.Hint="Tipo Gasto"
+                                          Text="{Binding NuevoGastoTipo}">
+                                    <ComboBoxItem Content="Combustible"/>
+                                    <ComboBoxItem Content="Peaje"/>
+                                    <ComboBoxItem Content="Viatico"/>
+                                    <ComboBoxItem Content="Otros"/>
+                                </ComboBox>
+                                
+                                <TextBox Grid.Column="1" Margin="0,0,12,0"
+                                         materialDesign:HintAssist.Hint="Descripción del Gasto"
+                                         Text="{Binding NuevoGastoDescripcion}"/>
+                                
+                                <TextBox Grid.Column="2" Margin="0,0,12,0"
+                                         materialDesign:HintAssist.Hint="Monto"
+                                         Text="{Binding NuevoGastoMonto}"/>
+                                
+                                <Button Grid.Column="3" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Command="{Binding AgregarGastoCommand}"
+                                        Background="{StaticResource PrimaryBlue}"
+                                        Foreground="White"
+                                        ToolTip="Agregar Gasto">
+                                    <materialDesign:PackIcon Kind="Plus"/>
+                                </Button>
+                            </Grid>
+
+                            <!-- DataGrid de Gastos -->
+                            <DataGrid ItemsSource="{Binding Gastos}" 
+                                      AutoGenerateColumns="False" 
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      Height="250">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}"/>
+                                    <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}"/>
+                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
+                                    <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=C}" FontWeight="Bold"/>
+                                    <DataGridTemplateColumn Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Style="{StaticResource MaterialDesignIconButton}"
+                                                        Command="{Binding DataContext.EliminarGastoCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding Id}"
+                                                        ToolTip="Eliminar"
+                                                        Height="30" Width="30">
+                                                    <materialDesign:PackIcon Kind="Delete" Foreground="#EF4444" Width="16" Height="16"/>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Columna Derecha: Finanzas -->
+                <StackPanel Grid.Column="1" Grid.Row="0">
+                    <Border Style="{StaticResource CardStyle}" Background="{StaticResource PrimaryBlue}">
+                        <StackPanel>
+                            <TextBlock Text="Resumen Financiero" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,24"/>
+                            
+                            <Grid Margin="0,0,0,16">
+                                <TextBlock Text="Ingreso (Flete)" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding Flete, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat=N2}" 
+                                         Foreground="White" 
+                                         HorizontalAlignment="Right" 
+                                         Width="120"
+                                         materialDesign:HintAssist.Hint="0.00"
+                                         materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
+                                         TextAlignment="Right"
+                                         FontSize="16"/>
+                            </Grid>
+                            
+                            <Grid Margin="0,0,0,16">
+                                <TextBlock Text="Pago Conductor" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                <TextBox Text="{Binding PagoConductor, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat=N2}" 
+                                         Foreground="White" 
+                                         HorizontalAlignment="Right" 
+                                         Width="120"
+                                         materialDesign:HintAssist.Hint="0.00"
+                                         materialDesign:TextFieldAssist.UnderlineBrush="{StaticResource AccentTurquoise}"
+                                         TextAlignment="Right"
+                                         FontSize="16"/>
+                            </Grid>
+                            
+                            <Separator Background="#33FFFFFF" Margin="0,16"/>
+                            
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock Text="Utilidad Bruta" Foreground="White"/>
+                                <TextBlock Text="{Binding UtilidadBruta, StringFormat=C}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+                            
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock Text="Total Gastos" Foreground="{StaticResource AccentOrange}"/>
+                                <TextBlock Text="{Binding TotalGastos, StringFormat=C}" Foreground="{StaticResource AccentOrange}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+                            
+                            <Separator Background="#33FFFFFF" Margin="0,16"/>
+                            
+                            <Grid>
+                                <TextBlock Text="UTILIDAD NETA" Foreground="{StaticResource AccentTurquoise}" FontSize="16" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding UtilidadNeta, StringFormat=C}" Foreground="{StaticResource AccentTurquoise}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- KPI Rendimiento -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,24,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Eficiencia Operativa" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource TextSecondary}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                <materialDesign:PackIcon Kind="GasStation" Width="32" Height="32" Foreground="{StaticResource AccentOrange}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <TextBlock Text="{Binding RendimientoCombustible, StringFormat=N2}" FontSize="32" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}"/>
+                                <TextBlock Text=" Km/L" VerticalAlignment="Bottom" Margin="4,0,0,6" Foreground="{StaticResource TextSecondary}"/>
+                            </StackPanel>
+                            <TextBlock Text="Estimado basado en gastos de combustible" FontSize="12" Foreground="{StaticResource TextSecondary}" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        
+        <!-- Loading Overlay -->
+        <Grid Grid.RowSpan="2" Background="#99000000" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="60" Height="60" Foreground="{StaticResource AccentTurquoise}"/>
+        </Grid>
+        
+        <!-- Snackbar Error -->
+        <materialDesign:Snackbar MessageQueue="{materialDesign:MessageQueue}" Grid.Row="1"/>
+    </Grid>
+</UserControl>

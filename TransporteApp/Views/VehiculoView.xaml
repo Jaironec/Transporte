@@ -1,0 +1,96 @@
+<UserControl x:Class="TransporteApp.Views.VehiculoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="1200">
+    <Grid Background="{DynamicResource MaterialDesignPaper}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="20" Background="{DynamicResource MaterialDesignCardBackground}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Gestión de Vehículos" Style="{StaticResource MaterialDesignHeadline4TextBlock}"/>
+                    <TextBlock Text="Administre su flota de transporte" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Command="{Binding NuevoCommand}" Content="Nuevo Vehículo" Style="{StaticResource MaterialDesignRaisedButton}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lista de Vehículos -->
+            <materialDesign:Card Grid.Column="0" Margin="0,0,20,0" VerticalAlignment="Stretch" UniformCornerRadius="8">
+                <DataGrid ItemsSource="{Binding Vehiculos}" 
+                          SelectedItem="{Binding VehiculoSeleccionado}"
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
+                          materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Placa" Binding="{Binding Placa}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="Marca" Binding="{Binding Marca}"/>
+                        <DataGridTextColumn Header="Modelo" Binding="{Binding Modelo}"/>
+                        <DataGridTextColumn Header="Capacidad (L)" Binding="{Binding CapacidadLitros, StringFormat=N2}"/>
+                        <DataGridTextColumn Header="Año" Binding="{Binding AnioFabricacion}"/>
+                        <DataGridTemplateColumn Header="Estado">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="4" Padding="8,2" Background="{DynamicResource PrimaryHueLightBrush}">
+                                        <TextBlock Text="{Binding Estado}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </materialDesign:Card>
+
+            <!-- Formulario de Edición -->
+            <materialDesign:Card Grid.Column="1" Padding="20" UniformCornerRadius="8" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="Detalle del Vehículo" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0,0,0,20"/>
+
+                        <TextBox Text="{Binding VehiculoSeleccionado.Placa}" materialDesign:HintAssist.Hint="Placa" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding VehiculoSeleccionado.Marca}" materialDesign:HintAssist.Hint="Marca" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding VehiculoSeleccionado.Modelo}" materialDesign:HintAssist.Hint="Modelo" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding VehiculoSeleccionado.CapacidadLitros}" materialDesign:HintAssist.Hint="Capacidad (Litros)" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        <TextBox Text="{Binding VehiculoSeleccionado.AnioFabricacion}" materialDesign:HintAssist.Hint="Año Fabricación" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,0,0,15"/>
+                        
+                        <ComboBox Text="{Binding VehiculoSeleccionado.Estado}" materialDesign:HintAssist.Hint="Estado" Style="{StaticResource MaterialDesignOutlinedComboBox}" Margin="0,0,0,15">
+                            <ComboBoxItem Content="Activo"/>
+                            <ComboBoxItem Content="Mantenimiento"/>
+                            <ComboBoxItem Content="Inactivo"/>
+                        </ComboBox>
+
+                        <DatePicker SelectedDate="{Binding VehiculoSeleccionado.FechaVencimientoSeguro}" materialDesign:HintAssist.Hint="Vencimiento Seguro" Style="{StaticResource MaterialDesignOutlinedDatePicker}" Margin="0,0,0,15"/>
+                        <DatePicker SelectedDate="{Binding VehiculoSeleccionado.FechaVencimientoSoat}" materialDesign:HintAssist.Hint="Vencimiento SOAT" Style="{StaticResource MaterialDesignOutlinedDatePicker}" Margin="0,0,0,15"/>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                            <Button Command="{Binding CancelarCommand}" Content="Cancelar" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="0,0,10,0"/>
+                            <Button Command="{Binding GuardarCommand}" Content="Guardar" Style="{StaticResource MaterialDesignRaisedButton}"/>
+                        </StackPanel>
+                        
+                        <Button Command="{Binding EliminarCommand}" Content="Eliminar Vehículo" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Red" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </materialDesign:Card>
+        </Grid>
+    </Grid>
+</UserControl>
