@@ -5,68 +5,186 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Material Design -->
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="BlueGrey" SecondaryColor="Amber" />
+                <!-- Material Design personalizado -->
+                <materialDesign:BundledTheme BaseTheme="Light"
+                                             PrimaryColor="Indigo"
+                                             SecondaryColor="DeepPurple"
+                                             ColorAdjustment="Dark" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Colores Corporativos Premium -->
-            <SolidColorBrush x:Key="PrimaryBlue" Color="#0F172A"/> <!-- Slate 900 -->
-            <SolidColorBrush x:Key="SecondaryBlue" Color="#1E293B"/> <!-- Slate 800 -->
-            <SolidColorBrush x:Key="AccentOrange" Color="#F59E0B"/> <!-- Amber 500 -->
-            <SolidColorBrush x:Key="AccentTurquoise" Color="#14B8A6"/> <!-- Teal 500 -->
-            <SolidColorBrush x:Key="BackgroundLight" Color="#F1F5F9"/> <!-- Slate 100 -->
-            <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
-            
-            <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
-            <SolidColorBrush x:Key="TextSecondary" Color="#64748B"/>
+            <!-- Paleta Corporativa Gold Standard -->
+            <Color x:Key="PrimaryColor">#0B1F3A</Color>
+            <Color x:Key="PrimaryDarkColor">#09162B</Color>
+            <Color x:Key="SecondaryColor">#182A47</Color>
+            <Color x:Key="AccentColor">#FFB547</Color>
+            <Color x:Key="AccentStrong">#FF8C00</Color>
+            <Color x:Key="SurfaceColor">#F6F8FB</Color>
 
-            <!-- Estilos Globales -->
+            <SolidColorBrush x:Key="PrimaryBlue" Color="{StaticResource PrimaryColor}"/>
+            <SolidColorBrush x:Key="SecondaryBlue" Color="{StaticResource SecondaryColor}"/>
+            <SolidColorBrush x:Key="AccentOrange" Color="{StaticResource AccentColor}"/>
+            <SolidColorBrush x:Key="AccentTurquoise" Color="#18B39F"/>
+            <SolidColorBrush x:Key="BackgroundLight" Color="{StaticResource SurfaceColor}"/>
+            <SolidColorBrush x:Key="CardBackground" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="TextPrimary" Color="#0F172A"/>
+            <SolidColorBrush x:Key="TextSecondary" Color="#6B7280"/>
+
+            <!-- Integración con MaterialDesign -->
+            <Color x:Key="PrimaryHueLightColor">#203457</Color>
+            <Color x:Key="PrimaryHueMidColor"  >#0B1F3A</Color>
+            <Color x:Key="PrimaryHueDarkColor" >#061325</Color>
+            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="{StaticResource PrimaryHueLightColor}"/>
+            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{StaticResource PrimaryHueMidColor}"/>
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="{StaticResource PrimaryHueDarkColor}"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="SecondaryAccentBrush" Color="{StaticResource AccentColor}"/>
+            <SolidColorBrush x:Key="SecondaryAccentForegroundBrush" Color="#FF111827"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+            <!-- Tipografía global -->
             <Style TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Segoe UI Variable Display"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
             </Style>
 
-            <!-- Botones: Redondeados y con Ripple -->
+            <!-- Botones: redondeados, ripple y CTA en ámbar -->
             <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
                 <Setter Property="Margin" Value="4"/>
                 <Setter Property="Padding" Value="16,10"/>
                 <Setter Property="FontSize" Value="13"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
                 <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="8"/>
                 <Setter Property="materialDesign:RippleAssist.IsDisabled" Value="False"/>
+            </Style>
+
+            <Style x:Key="CallToActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Margin" Value="4"/>
+                <Setter Property="Padding" Value="18,12"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="#111827"/>
+                <Setter Property="Background" Value="{StaticResource AccentOrange}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource AccentOrange}"/>
+                <Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="10"/>
+                <Setter Property="materialDesign:RippleAssist.Feedback" Value="#26FF8C00"/>
             </Style>
 
             <!-- TextBox: Floating Hint por defecto -->
             <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                 <Setter Property="Margin" Value="0,0,0,16"/>
                 <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.9"/>
-            </Style>
-            
-            <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
-                <Setter Property="Margin" Value="0,0,0,16"/>
-            </Style>
-            
-            <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}">
-                <Setter Property="Margin" Value="0,0,0,16"/>
+                <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
+                <Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="#D1D5DB"/>
+                <Setter Property="BorderThickness" Value="0"/>
             </Style>
 
-            <!-- DataGrid: Estilo Premium -->
+            <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
+                <Setter Property="Margin" Value="0,0,0,16"/>
+                <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
+            </Style>
+
+            <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}">
+                <Setter Property="Margin" Value="0,0,0,16"/>
+                <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
+            </Style>
+
+            <!-- DataGrid: estilo premium con headers limpios y bordes redondeados -->
             <Style TargetType="DataGrid" BasedOn="{StaticResource MaterialDesignDataGrid}">
                 <Setter Property="Background" Value="White"/>
                 <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="AlternationCount" Value="2"/>
                 <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
-                <Setter Property="RowHeight" Value="40"/>
-                <Setter Property="ColumnHeaderHeight" Value="45"/>
+                <Setter Property="RowHeight" Value="42"/>
+                <Setter Property="ColumnHeaderHeight" Value="48"/>
                 <Setter Property="GridLinesVisibility" Value="None"/>
                 <Setter Property="HeadersVisibility" Value="Column"/>
                 <Setter Property="materialDesign:DataGridAssist.CellPadding" Value="16,8"/>
                 <Setter Property="materialDesign:DataGridAssist.ColumnHeaderPadding" Value="16,10"/>
-                <Setter Property="materialDesign:DataGridAssist.CornerRadius" Value="8"/>
+                <Setter Property="materialDesign:DataGridAssist.CornerRadius" Value="10"/>
+                <Setter Property="RowHeaderWidth" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGrid">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="12"
+                                    Padding="8"
+                                    SnapsToDevicePixels="True">
+                                <ScrollViewer x:Name="DG_ScrollViewer"
+                                              Focusable="false">
+                                    <ScrollViewer.Template>
+                                        <ControlTemplate TargetType="ScrollViewer">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <DataGridColumnHeadersPresenter Grid.Row="0" Grid.Column="1"/> 
+                                                <ScrollContentPresenter Grid.Row="1" Grid.Column="1" />
+                                                <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Row="1" Grid.Column="2" Orientation="Vertical" />
+                                                <ScrollBar x:Name="PART_HorizontalScrollBar" Grid.Row="2" Grid.Column="1" Orientation="Horizontal" />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </ScrollViewer.Template>
+                                </ScrollViewer>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="RowStyle">
+                    <Setter.Value>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                            <Setter Property="Margin" Value="0,0,0,6"/>
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridRow">
+                                        <Border CornerRadius="10"
+                                                Background="{TemplateBinding Background}"
+                                                Padding="4"
+                                                SnapsToDevicePixels="True">
+                                            <DataGridCellsPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F1F5FF"/>
+                                </Trigger>
+                                <Trigger Property="AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="#FBFDFF"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ColumnHeaderStyle">
+                    <Setter.Value>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
-            <!-- Cards -->
+            <!-- Cards con elevación -->
             <Style x:Key="CardStyle" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource CardBackground}"/>
                 <Setter Property="CornerRadius" Value="12"/>
@@ -74,10 +192,10 @@
                 <Setter Property="Margin" Value="8"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="20" 
-                                        ShadowDepth="5" 
-                                        Opacity="0.08" 
-                                        Color="Black"/>
+                        <DropShadowEffect BlurRadius="24"
+                                        ShadowDepth="6"
+                                        Opacity="0.10"
+                                        Color="#1A000000"/>
                     </Setter.Value>
                 </Setter>
             </Style>
@@ -91,10 +209,10 @@
                 <Setter Property="BorderBrush" Value="#E2E8F0"/>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect BlurRadius="25" 
-                                        ShadowDepth="8" 
-                                        Opacity="0.1" 
-                                        Color="Black"/>
+                        <DropShadowEffect BlurRadius="30"
+                                        ShadowDepth="8"
+                                        Opacity="0.12"
+                                        Color="#1A000000"/>
                     </Setter.Value>
                 </Setter>
             </Style>

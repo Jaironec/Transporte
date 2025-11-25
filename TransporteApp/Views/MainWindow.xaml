@@ -19,7 +19,7 @@
             <views:DashboardView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:ViajeViewModel}">
-            <views:ViajeDetalleView/>
+            <views:ViajeView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:VehiculoViewModel}">
             <views:VehiculoView/>
