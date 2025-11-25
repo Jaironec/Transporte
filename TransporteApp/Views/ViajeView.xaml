@@ -140,7 +140,7 @@
 
                                 <DatePicker Grid.Row="1" Grid.Column="1"
                                             materialDesign:HintAssist.Hint="Fecha de Salida"
-                                            SelectedDate="{Binding FechaSalida}"/>
+                                            SelectedDate="{Binding FechaSalida, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                                 <TextBox Grid.Row="2" Grid.Column="0"
                                          materialDesign:HintAssist.Hint="Origen"
@@ -152,11 +152,12 @@
 
                                 <TextBox Grid.Row="3" Grid.Column="0"
                                          materialDesign:HintAssist.Hint="Cantidad de litros"
-                                         Text="{Binding CantidadLitros, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                         Text="{Binding CantidadLitros, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                                         materialDesign:HintAssist.HelperText="Requerido para calcular rendimiento"/>
 
                                 <ComboBox Grid.Row="3" Grid.Column="1"
                                           materialDesign:HintAssist.Hint="Estado"
-                                          SelectedItem="{Binding Estado, UpdateSourceTrigger=PropertyChanged}">
+                                          SelectedItem="{Binding Estado, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}">
                                     <ComboBoxItem Content="Programado"/>
                                     <ComboBoxItem Content="EnCurso"/>
                                     <ComboBoxItem Content="Completado"/>

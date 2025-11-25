@@ -75,23 +75,55 @@
                 <Setter Property="materialDesign:RippleAssist.Feedback" Value="#26FF8C00"/>
             </Style>
 
-            <!-- TextBox: Floating Hint por defecto -->
+            <!-- Plantilla de errores para validaciones en formularios -->
+            <ControlTemplate x:Key="ValidationTemplate">
+                <DockPanel LastChildFill="True">
+                    <TextBlock Foreground="{StaticResource AccentStrong}"
+                               FontSize="12"
+                               Margin="0,0,0,4"
+                               Text="{Binding [0].ErrorContent}"/>
+                    <AdornedElementPlaceholder />
+                </DockPanel>
+            </ControlTemplate>
+
+            <!-- TextBox: Floating Hint por defecto con visualización de errores -->
             <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignFloatingHintTextBox}">
                 <Setter Property="Margin" Value="0,0,0,16"/>
                 <Setter Property="materialDesign:HintAssist.FloatingScale" Value="0.9"/>
                 <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
                 <Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="#D1D5DB"/>
                 <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="materialDesign:TextFieldAssist.UnderlineBrush" Value="#EF4444"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignFloatingHintComboBox}">
                 <Setter Property="Margin" Value="0,0,0,16"/>
                 <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="BorderBrush" Value="#EF4444"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignFloatingHintDatePicker}">
                 <Setter Property="Margin" Value="0,0,0,16"/>
                 <Setter Property="materialDesign:HintAssist.Foreground" Value="{StaticResource TextSecondary}"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationTemplate}"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="BorderBrush" Value="#EF4444"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <!-- DataGrid: estilo premium con headers limpios y bordes redondeados -->
